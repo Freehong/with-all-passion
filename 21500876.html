@@ -1,0 +1,122 @@
+<html>
+  <head>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {packages: ['corechart', 'line']});
+      google.charts.setOnLoadCallback(drawLineColors);
+
+      function drawLineColors() {
+
+        // data type I
+/////////////////////////////////////////////////////////////////
+        var data1 = new google.visualization.DataTable();
+        data1.addColumn('number', 'X');
+        data1.addColumn('number', 'Kyrie irving');
+        data1.addColumn('number', 'Lebron James');
+
+        data1.addRows([
+          [1,19,20],[2,20,23],[3,27,31],[4,50,20],[5,41,30],[6,19,29],[7,21,26],[8,27,23],[9,19,39],[10,28,31]
+        ]);
+////////////////////////////////////////////////
+        // data type II
+        var data2 = google.visualization.arrayToDataTable([
+          ['Year', 'Dwight Howard', {type: 'string', role: 'annotation'}, 'Anthony Davis'],
+          ['2011',  18,   18,                                 16],
+          ['2012',  19.5,   19.5,                               21  ],
+          ['2013',  23,    23,                                 27 ],
+          ['2014',  26,   26,                                26 ]
+        ]);
+
+        data2 = new google.visualization.DataView(data2);
+//////////////////////////////////////////////////////
+        // add a new column right (column for annotation) to the fourth column (using the source of column 3)
+        data2.setColumns([0, 1, 2, 3, {type: 'string', role: 'annotation', sourceColumn: 3, calc: 'stringify'}])
+
+        var options1 = {
+          title: 'Score in recent 10 games',
+          hAxis: {
+            title: 'each game'
+          },
+          vAxis: {
+            title: 'score'
+          },
+           animation: {
+		duration:900,
+		startup: true,
+		easing: 'out'
+	  },
+          colors: ['black', 'red']
+        };
+
+        var options2 = {
+          title: ' Superstar`s score',
+
+          titleTextStyle: {
+            color: 'black',
+            fontSize: 40,
+            fontName: 'Times New Roman'
+          },
+
+          hAxis: {
+            title: 'Year',
+            titleTextStyle: {
+              fontSize: 40,
+              fontName: 'Times New Roman',
+              italic: false
+            },
+          },
+          vAxis: {
+            title: 'Average Score',
+            titleTextStyle: {
+              fontSize: 40,
+              fontName: 'Times New Roman',
+              italic: false
+            },
+          },
+          animation: {
+            duration: 1000, // 1000 ms = 1 s
+            startup: true,
+            easing: 'out'
+          },
+
+          annotations: {
+            boxStyle: {
+              // Color of the box outline.
+              stroke: 'black',
+              // Thickness of the box outline.
+              strokeWidth: 2,
+              // x-radius of the corner curvature.
+              rx: 8,
+              // y-radius of the corner curvature.
+              ry: 8
+            }
+          },
+
+          legend: {
+            position: 'bottom',
+            textStyle: {
+              fontSize: 20
+            }
+          },
+          colors: ['black', 'red']
+        };
+
+        var chart1 = new google.visualization.LineChart(document.getElementById('chart_div1'));
+        chart1.draw(data1, options1);
+
+        var chart2 = new google.visualization.LineChart(document.getElementById('chart_div2'));
+        chart2.draw(data2, options2);
+      }
+    </script>
+  </head>
+  <body>
+    <div id="introduction" style="max-width: 800px; font-family: Verdana, Dotum; margin: auto; padding-bottom: 30px">
+      <h1>Line chart</h1>
+      <p>date: 2019-10-31</p>
+      <p>Introduction: These charts show best player score in NBA</p>
+      <p>Data: The data is from naver </p>
+    </div>
+    <div id="chart_div1" style="max-width: 1200px; margin: auto; width: 1200px; height: 500px;"></div>
+    <div id="chart_div2" style="max-width: 1200px; margin: auto; width: 1200px; height: 500px; padding-top: 50px"></div>
+  </body>
+</html>
