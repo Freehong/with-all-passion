@@ -1,0 +1,53 @@
+GetSentiment <- function(file){
+  fileName <- glue('./input/', file ,sep = '')
+  fileName <- trimws(fileName)
+  fileText <- readLines(fileName)
+  tokens <- tibble(text = fileText) %>%
+    unnest_tokens(word, text)
+  sentiment <- tokens %>%
+    inner_join(get_sentiments('nrc')) %>%
+    count(sentiment) %>%
+    #????????? ?????????????????? ??????
+    spread(sentiment, n, fill = 0) %>%
+    #pos - neg 말고 ?????? 감성?????? 맥이??? ?????? 존재
+    mutate(sentiment = positive - negative) %>%
+    mutate(file = file) %>%
+    mutate(year = as.numeric(str_match(file, '\\d{4}'))) %>%
+    mutate(president = str_match(file, '(.*)_')[2])
+  return(sentiment)
+}
+
+
+score.sentiment <- function(sentences, pos.words, neg.words) 
+  
+{
+  
+  scores <- laply(sentences, function(sentence, pos.words, neg.words)
+    
+  {
+    
+    sentence <- gsub ("[[:punct:]]","",sentence)
+    sentence <- gsub ("[[:cntrl:]]","",sentence)
+    sentence <- gsub("\\d+","",sentence)
+    tryTolower <- function(x)
+    {
+      y <- NA
+      try_error<- tryCatch(tolower(x), error = function(e)e)
+      if(!inherits(try_error, "error"))
+        y <- tolower(x)
+      return(y)
+    }
+    sentence <- sapply(sentence, tryTolower)
+    word.list <- str_split(sentence, "\\s+")
+    words <- unlist(word.list)
+    pos.matches <- match(words, pos.words)
+    neg.matches <- match(words, neg.words)
+    
+    pos.matches <- !is.na(pos.matches)
+    neg.matches <- !is.na(neg.matches)
+    score <- sum(pos.matches) - sum(neg.matches)
+    return (score)
+  }, pos.words, neg.words)
+  scores.df <- data.frame (text = sentences, score = scores)
+  return(scores.df)
+}
